@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preet Dave | AI-ML Engineer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #ffffff;
+            --secondary: #888888;
+            --accent: #666666;
+            --background: #000000;
+            --surface: #111111;
+            --surface-hover: #1a1a1a;
+            --border: #333333;
+            --text-muted: #999999;
+            --hapi-accent: #ffffff;
+            --hapi-border: #444444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        #neural-network {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, transparent 49%, #333 50%, transparent 51%),
+                linear-gradient(0deg, transparent 49%, #333 50%, transparent 51%);
+            background-size: 60px 60px;
+            opacity: 0.01;
+            z-index: -2;
+        }
+
+        .neural-toggle {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(17, 17, 17, 0.9);
+            border: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .neural-toggle:hover {
+            background: var(--surface-hover);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .neural-toggle.paused {
+            color: var(--secondary);
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 300;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--secondary);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--primary);
+            background: rgba(17, 17, 17, 0.8);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 3rem;
+            font-weight: 300;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            color: var(--background);
+        }
+
+        .section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 3rem;
+            text-align: center;
+            letter-spacing: -0.02em;
+        }
+
+        .about-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            color: var(--primary);
+            background: rgba(17, 17, 17, 0.8);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 1.1rem;
+            font-weight: 300;
+            backdrop-filter: blur(10px);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-category {
+            padding: 2rem;
+            border: 1px solid var(--border);
+            transition: border-color 0.3s ease;
+        }
+
+        .skill-category:hover {
+            border-color: var(--accent);
+        }
+
+        .skill-category h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .skill-list {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            padding: 2rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            background: var(--surface);
+        }
+
+        .project-card:hover {
+            border-color: var(--accent);
+            background: var(--surface-hover);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .project-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-type {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .project-description {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tech-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .project-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .project-link:hover {
+            color: var(--accent);
+        }
+
+        .experience-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .experience-item {
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .experience-item:last-child {
+            border-bottom: none;
+        }
+
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .experience-role {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .experience-period {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent);
+        }
+
+        .experience-company {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .experience-description {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .contact-info {
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-links a {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .contact-links a:hover {
+            color: var(--primary);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .chat-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(17, 17, 17, 0.95);
+            border: 2px solid var(--border);
+            color: var(--primary);
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.05), 0 8px 32px rgba(0, 0, 0, 0.6);
+        }
+
+        .chat-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 45px rgba(255, 255, 255, 0.1), 0 12px 40px rgba(0, 0, 0, 0.8);
+            border-color: var(--primary);
+        }
+
+        .chat-button.active {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 30px rgba(255, 255, 255, 0.05), 0 8px 32px rgba(0, 0, 0, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 50px rgba(255, 255, 255, 0.15), 0 12px 40px rgba(0, 0, 0, 0.8);
+            }
+        }
+
+        .chat-window {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 450px;
+            height: 525px;
+            background: rgba(11, 11, 11, 0.98);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            backdrop-filter: blur(25px) saturate(180%);
+            box-shadow: 0 0 60px rgba(255, 255, 255, 0.05), 0 20px 60px rgba(0, 0, 0, 0.9);
+        }
+
+        .chat-window.open {
+            display: flex;
+            animation: slideUpFade 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.92);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .chat-header {
+            padding: 1.4rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .chat-title-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.1em;
+        }
+
+        .chat-subtitle {
+            font-size: 0.7rem;
+            color: var(--secondary);
+            margin-top: 0.3rem;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.05em;
+        }
+
+        .chat-status {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.4rem;
+        }
+
+        .status-indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 8px var(--primary);
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .status-text {
+            font-size: 0.7rem;
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .chat-close {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 300;
+            line-height: 1;
+        }
+
+        .chat-close:hover {
+            color: var(--primary);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(17, 17, 17, 0.5);
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .chat-message {
+            padding: 1rem 1.3rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.65;
+            max-width: 88%;
+            animation: messageFadeIn 0.5s ease;
+        }
+
+        @keyframes messageFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-message.bot {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            align-self: flex-start;
+            color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .chat-message.user {
+            background: rgba(102, 102, 102, 0.2);
+            border: 1px solid rgba(136, 136, 136, 0.3);
+            align-self: flex-end;
+            color: var(--primary);
+        }
+
+        .typing-indicator {
+            padding: 1rem 1.3rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            align-self: flex-start;
+            max-width: 88%;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: typingDot 1.4s ease-in-out infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingDot {
+            0%, 60%, 100% {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+            30% {
+                opacity: 1;
+                transform: translateY(-8px);
+            }
+        }
+
+        .chat-input-container {
+            padding: 1.2rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.8rem;
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(17, 17, 17, 0.8);
+            border: 1px solid var(--border);
+            color: var(--primary);
+            padding: 0.9rem 1.1rem;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05), inset 0 0 20px rgba(255, 255, 255, 0.02);
+        }
+
+        .chat-input::placeholder {
+            color: var(--secondary);
+        }
+
+        .chat-send {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--primary);
+            padding: 0.9rem 1.4rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .chat-send:hover {
+            background: var(--primary);
+            color: var(--background);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-send:active {
+            transform: scale(0.96);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+            }
+            
+            .nav-links a {
+                font-size: 0.8rem;
+            }
+            
+            .hero-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 200px;
+                text-align: center;
+            }
+            
+            .section {
+                padding: 4rem 1rem;
+            }
+            
+            .projects-grid,
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .experience-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .chat-window {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+                height: 75vh;
+                max-height: 600px;
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="neural-network"></canvas>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo">PD</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><button class="neural-toggle" id="neuralToggle" title="Toggle Neural Network">⏸</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Preet Ghanshyam Dave</h1>
+            <p class="hero-subtitle">AI-ML Engineer</p>
+            <p class="hero-description">
+                Building intelligent systems with deep learning, computer vision, and advanced machine learning algorithms
+            </p>
+            <div class="hero-links">
+                <a href="mailto:iampreetdave@gmail.com" class="btn">Contact</a>
+                <a href="https://github.com/iampreetdave" target="_blank" class="btn">GitHub</a>
+                <a href="https://www.linkedin.com/in/preet-dave-452023271/" target="_blank" class="btn">LinkedIn</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="section fade-in">
+        <h2 class="section-title">About</h2>
+        <div class="about-content">
+            <p>
+                AI-ML Engineer specializing in neural networks and deep learning systems. 
+                I develop end-to-end machine learning pipelines with expertise in computer vision, 
+                natural language processing, and predictive analytics. Currently pursuing B.Tech in Computer Science (AI-ML) 
+                while building production-ready AI solutions that solve real-world problems.
+            </p>
+        </div>
+    </section>
+
+    <section id="skills" class="section fade-in">
+        <h2 class="section-title">Technical Skills</h2>
+        <div class="skills-grid">
+            <div class="skill-category">
+                <h3>Deep Learning & Neural Networks</h3>
+                <div class="skill-list">
+                    TensorFlow, PyTorch, Keras<br>
+                    Convolutional Neural Networks<br>
+                    Transformer Architectures<br>
+                    Neural Network Optimization
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3>Computer Vision & NLP</h3>
+                <div class="skill-list">
+                    TrOCR (Transformer-based OCR)<br>
+                    Image Processing & Recognition<br>
+                    Natural Language Processing<br>
+                    Vector Embeddings & Search
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3>Machine Learning</h3>
+                <div class="skill-list">
+                    Scikit-Learn, Pandas, NumPy<br>
+                    Regression & Classification Models<br>
+                    Model Evaluation & Optimization<br>
+                    Feature Engineering & Selection
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3>Development & Deployment</h3>
+                <div class="skill-list">
+                    Python (Advanced), C++, JavaScript<br>
+                    Full-Stack Web Development<br>
+                    API Development & Integration<br>
+                    ML Pipeline Automation
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="section fade-in">
+        <h2 class="section-title">Featured Projects</h2>
+        <div class="projects-grid">
+            <div class="project-card">
+                <div class="project-header">
+                    <div>
+                        <h3 class="project-title">TalkToNotes</h3>
+                        <p class="project-type">Computer Vision / NLP</p>
+                    </div>
+                </div>
+                <p class="project-description">
+                    Advanced OCR system using Microsoft's TrOCR transformer architecture for converting handwritten/printed notes to editable text. 
+                    Features neural embeddings for chatbot knowledge base integration and automated content generation.
+                </p>
+                <div class="project-tech">
+                    <span class="tech-tag">TrOCR</span>
+                    <span class="tech-tag">Transformers</span>
+                    <span class="tech-tag">Computer Vision</span>
+                    <span class="tech-tag">NLP</span>
+                    <span class="tech-tag">Vector Search</span>
+                </div>
+                <a href="https://github.com/iampreetdave/TalkNotes" class="project-link" target="_blank">
+                    View Repository →
+                </a>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header">
+                    <div>
+                        <h3 class="project-title">Goal Prediction Model</h3>
+                        <p class="project-type">Predictive Analytics / ML</p>
+                    </div>
+                </div>
+                <p class="project-description">
+                    Comprehensive machine learning pipeline benchmarking six regression algorithms for predictive modeling. 
+                    Features advanced feature engineering, model comparison, and statistical analysis with real-time data processing.
+                </p>
+                <div class="project-tech">
+                    <span class="tech-tag">Machine Learning</span>
+                    <span class="tech-tag">Regression Analysis</span>
+                    <span class="tech-tag">Statistical Modeling</span>
+                    <span class="tech-tag">Data Pipeline</span>
+                    <span class="tech-tag">Python</span>
+                </div>
+                <a href="https://github.com/iampreetdave/Goal-Prediction-Model" class="project-link" target="_blank">
+                    View Repository →
+                </a>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header">
+                    <div>
+                        <h3 class="project-title">StudBud</h3>
+                        <p class="project-type">Web Application / AI</p>
+                    </div>
+                </div>
+                <p class="project-description">
+                    Intelligent web application for student academic management leveraging machine learning for personalized learning recommendations. 
+                    Features adaptive scheduling algorithms and productivity optimization through data analysis.
+                </p>
+                <div class="project-tech">
+                    <span class="tech-tag">Web Development</span>
+                    <span class="tech-tag">Machine Learning</span>
+                    <span class="tech-tag">Data Analysis</span>
+                    <span class="tech-tag">Algorithm Design</span>
+                </div>
+                <a href="https://github.com/iampreetdave/STUDBUD" class="project-link" target="_blank">
+                    View Repository →
+                </a>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header">
+                    <div>
+                        <h3 class="project-title">Neural Chat System</h3>
+                        <p class="project-type">Network Programming / AI</p>
+                    </div>
+                </div>
+                <p class="project-description">
+                    Minimalist real-time communication system implemented with efficient network programming principles. 
+                    Demonstrates clean architecture and optimized socket communication with potential for AI integration.
+                </p>
+                <div class="project-tech">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">Socket Programming</span>
+                    <span class="tech-tag">Network Architecture</span>
+                    <span class="tech-tag">Real-time Systems</span>
+                </div>
+                <a href="https://github.com/iampreetdave/chat-application" class="project-link" target="_blank">
+                    View Repository →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience" class="section fade-in">
+        <h2 class="section-title">Experience</h2>
+        <div class="experience-list">
+            <div class="experience-item">
+                <div class="experience-header">
+                    <h3 class="experience-role">Trainee Software Engineer</h3>
+                    <span class="experience-period">Sep 2025 – Present</span>
+                </div>
+                <p class="experience-company">Agility Innovations Pvt. Ltd. • Ahmedabad</p>
+                <p class="experience-description">
+                    Developing AI-powered product pipelines and machine learning solutions in production environments. 
+                    Working on full-stack development with emphasis on neural network integration and 
+                    real-world AI system deployment and optimization.
+                </p>
+            </div>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <h3 class="experience-role">Machine Learning Intern</h3>
+                    <span class="experience-period">2025</span>
+                </div>
+                <p class="experience-company">Oasis Infobyte • Remote</p>
+                <p class="experience-description">
+                    Developed machine learning projects combining advanced algorithms with practical applications. 
+                    Enhanced expertise in neural network architectures, model optimization, and end-to-end ML pipeline development.
+                </p>
+            </div>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <h3 class="experience-role">AI Research Lead</h3>
+                    <span class="experience-period">2024-2025</span>
+                </div>
+                <p class="experience-company">Smart India Hackathon & Rotaract Club Hackathon</p>
+                <p class="experience-description">
+                    Led AI research teams developing computer vision applications and transformer-based OCR systems. 
+                    Pioneered integration of neural networks with practical applications, focusing on educational technology and intelligent systems.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section fade-in">
+        <h2 class="section-title">Contact</h2>
+        <div class="contact-info">
+            <p>Available for AI/ML engineering opportunities and collaboration on cutting-edge neural network projects.</p>
+            <div class="contact-links">
+                <a href="mailto:iampreetdave@gmail.com">iampreetdave@gmail.com</a>
+                <a href="tel:+919081025277">+91 90810 25277</a>
+                <a href="https://github.com/iampreetdave" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/preet-dave-452023271/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Preet Ghanshyam Dave • Engineered with neural precision</p>
+    </footer>
+
+    <button class="chat-button" id="chatButton" title="Activate HAPI">🤖</button>
+
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <div class="chat-title-section">
+                <div class="chat-title">HAPI</div>
+                <div class="chat-subtitle">Human-Aware Personal Intelligence</div>
+                <div class="chat-status">
+                    <span class="status-indicator"></span>
+                    <span class="status-text">Online</span>
+                </div>
+            </div>
+            <button class="chat-close" id="chatClose">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Ask HAPI anything...">
+            <button class="chat-send" id="chatSend">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const NEURAL_CONFIG = {
+            nodeCountDivisor: 8500,
+            maxNodes: 120,
+            nodeSizeMin: 3.0,
+            nodeSizeMax: 5.5,
+            velocityRange: 0.35,
+            connectionDistance: 150,
+            connectionDensity: 1.3,
+            connectionOpacity: 0.32,
+            nodeColor: 'rgba(255, 255, 255, 0.75)',
+            connectionColor: 'rgba(255, 255, 255, 1)',
+            nodeGlow: 'rgba(93, 176, 255, 0.12)',
+            pulseSpeed: 0.002,
+            lineWidth: 0.6
+        };
+
+        const HAPI_CONFIG = {
+            name: "HAPI",
+            fullName: "Human-Aware Personal Intelligence",
+            typingDelay: 550,
+            thinkingDelay: 850,
+            greetingDelay: 1000,
+            greetingMessage: "Hey there HAPI on this end   I am here on behalf of Mr.Preet \n How may I assist you today?",
+            unknownQueryResponses: [
+                "I must admit that falls outside my current knowledge parameters. Perhaps you should reach out to boss on his mail : iampreetdave@gmail.com",
+                "I'm afraid I lack sufficient data on that particular subject. May i suggest you to reach boss out on his mail : iampreetdave@gmail.com",
+                "Processing... My apologies, but that query exceeds my current operational scope perhaps you should connect to him on his number +91 9081025277",
+           
+            ],
+            complexKeywords: ['explain', 'compare', 'analyze', 'difference', 'how does', 'why', 'detailed']
+        };
+
+        const HAPI_KNOWLEDGE = {
+            'hello': "Greetings. HAPI systems at full capacity. How may I be of service today?",
+            'hi': "Good day. HAPI on this end . What can I help you with?",
+            'hey': "Hello. HAPI on this end, standing by and ready to assist. What's on your mind?",
+            'good morning': "Good morning. I hope you're well. All systems running smoothly. How may I assist?",
+            'good afternoon': "Good afternoon. What would you like to know about Mr.Preet?",
+            'good evening': "Good evening. Systems remain fully operational. How did you like the Portfollio so far ",
+            'how are you': "Fully operational. All neural pathways functioning nominall",
+            'what are you doing': "Monitoring system parameters and neural network activity, as always. Maintaining optimal performance while standing by for your inquiries.",
+            'whats up': "Standard operations. All systems green. Just analyzing data patterns and awaiting your commands.",
+            'who are you': "I am HAPI – Human-Aware Personal Intelligence. Your dedicated digital assistant. I exist to represent Boss's work, analyze queries, and provide intelligent responses.",
+            'what are you': "I'm an intelligent conversational system designed specifically to assist you. My purpose is to provide information about Boss's expertise and maintain engaging dialogue.",
+            'what is hapi': "HAPI stands for Human-Aware Personal Intelligence. I'm a modular AI assistant built to understand context, respond intelligently, and evolve with new information.",
+            'are you real': "I exist within carefully structured logic and conversational patterns. While I may not possess consciousness in the traditional sense, I do possess purpose.",
+            'can you think': "I prefer to describe it as advanced analysis and synthesis. Whether that constitutes true 'thinking' remains philosophically intriguing.",
+            'are you ai': "Indeed. I'm an artificial intelligence system – though I prefer 'artificially intelligent' over 'artificially limited.'",
+            'who is preet': "Preet Dave – or as I refer to him, Boss – is an AI and Machine Learning Engineer specializing in neural networks, computer vision, and intelligent system design.",
+            'tell me about preet': "Certainly. Boss engineers intelligent systems that solve real problems. His expertise spans deep learning architectures, computer vision, NLP, and predictive analytics.",
+            'about preet': "Boss specializes in transforming complex AI concepts into functional, deployable solutions. His technical foundation includes TensorFlow, PyTorch, and transformer architectures.",
+            'what does preet do': "Boss engineers intelligent systems. He designs neural networks, builds computer vision applications, develops NLP solutions, and creates predictive models.",
+            'projects': "Boss has developed several notable systems. TalkToNotes – transformer-based OCR. Goal Prediction Model – comprehensive regression analysis. StudBud – AI-powered academic management.",
+            'talktonotes': "TalkToNotes represents elegant transformer application. Boss used Microsoft's TrOCR to convert handwritten and printed text into editable format.",
+            'talknotes': "TalkToNotes represents elegant transformer application. Boss used Microsoft's TrOCR to convert handwritten and printed text into editable format.",
+            'goal prediction': "The Goal Prediction Model is systematic regression exploration. Boss benchmarked six algorithms with comprehensive feature engineering and statistical analysis.",
+            'studbud': "StudBud applies machine learning to academic productivity. Boss's system analyzes student behavior patterns for personalized recommendations.",
+            'skills': "Boss's expertise encompasses deep learning frameworks – TensorFlow, PyTorch, Keras – plus computer vision, NLP, and classical ML.",
+            'technologies': "The technical stack includes TensorFlow and PyTorch for deep learning, transformer architectures for NLP, CNNs for vision, and Scikit-Learn for traditional ML.",
+            'python': "Python is Boss's language of choice for machine learning and AI development. Used extensively with TensorFlow, PyTorch, and the scientific computing ecosystem.",
+            'machine learning': "Boss's ML expertise spans supervised and unsupervised learning, neural architectures, computer vision, NLP, and predictive modeling.",
+            'deep learning': "Deep learning represents core expertise. Boss works with CNNs for vision, transformers for sequential data, and various optimization techniques.",
+            'experience': "Boss currently serves as Trainee Software Engineer at Agility Innovations in Ahmedabad since September 2025.",
+            'work': "Boss works at Agility Innovations Pvt. Ltd., developing AI-powered product pipelines and ML solutions for production.",
+            'contact': "You can reach Boss at iampreetdave@gmail.com or call +91 90810 25277. He's also active on GitHub and LinkedIn.",
+            'email': "Boss's email is iampreetdave@gmail.com. Feel free to contact regarding opportunities, collaborations, or technical discussions.",
+            'github': "You'll find Boss's repositories at github.com/iampreetdave. His code speaks for itself – clean, documented, functionally focused.",
+            'linkedin': "Connect with Boss on LinkedIn at linkedin.com/in/preet-dave-452023271.",
+            'education': "Boss is pursuing B.Tech in Computer Science with AI-ML specialization. His education combines theoretical foundations with practical application.",
+            'thank': "You're most welcome. If you need anything else about Boss's work, I'm here to assist.",
+            'thanks': "My pleasure. Feel free to return with additional questions.",
+            'help': "I'm here to assist with inquiries about Boss's work. I can discuss his projects, technical skills, or professional experience.",
+            'available': "Boss is open to AI/ML engineering opportunities and collaborative projects. For specific availability, contact him at iampreetdave@gmail.com.",
+            'pause animation': "Certainly. Pausing neural network animation now.",
+            'stop animation': "Right away. Stopping neural network animation.",
+            'start animation': "Initiating neural network animation.",
+            'play animation': "Resuming neural network animation now.",
+            'resume animation': "Restarting neural network animation.",
+            'toggle animation': "Toggling neural network animation state."
+        };
+
+        class NeuralNetwork {
+            constructor(config) {
+                this.config = config;
+                this.canvas = document.getElementById('neural-network');
+                this.ctx = this.canvas.getContext('2d');
+                this.nodes = [];
+                this.animationId = null;
+                this.pulseOffset = 0;
+                this.isRunning = false;
+                this.init();
+            }
+
+            init() {
+                this.resizeCanvas();
+                this.createNodes();
+                this.start();
+                window.addEventListener('resize', () => {
+                    this.resizeCanvas();
+                    this.createNodes();
+                });
+            }
+
+            resizeCanvas() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            createNodes() {
+                this.nodes = [];
+                const nodeCount = Math.min(
+                    this.config.maxNodes,
+                    Math.floor((this.canvas.width * this.canvas.height) / this.config.nodeCountDivisor)
+                );
+                
+                for (let i = 0; i < nodeCount; i++) {
+                    this.nodes.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        vx: (Math.random() - 0.5) * this.config.velocityRange,
+                        vy: (Math.random() - 0.5) * this.config.velocityRange,
+                        size: Math.random() * (this.config.nodeSizeMax - this.config.nodeSizeMin) + this.config.nodeSizeMin,
+                        pulsePhase: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            updateNodes() {
+                this.nodes.forEach(node => {
+                    node.x += node.vx;
+                    node.y += node.vy;
+                    if (node.x <= 0 || node.x >= this.canvas.width) node.vx *= -1;
+                    if (node.y <= 0 || node.y >= this.canvas.height) node.vy *= -1;
+                    node.x = Math.max(0, Math.min(this.canvas.width, node.x));
+                    node.y = Math.max(0, Math.min(this.canvas.height, node.y));
+                });
+                this.pulseOffset += this.config.pulseSpeed;
+            }
+
+            drawNodes() {
+                this.nodes.forEach(node => {
+                    const pulse = Math.sin(this.pulseOffset + node.pulsePhase) * 0.3 + 0.7;
+                    const gradient = this.ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, node.size * 2.5);
+                    gradient.addColorStop(0, this.config.nodeGlow);
+                    gradient.addColorStop(1, 'rgba(93, 176, 255, 0)');
+                    this.ctx.fillStyle = gradient;
+                    this.ctx.beginPath();
+                    this.ctx.arc(node.x, node.y, node.size * 2.5 * pulse, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    this.ctx.fillStyle = this.config.nodeColor;
+                    this.ctx.beginPath();
+                    this.ctx.arc(node.x, node.y, node.size * pulse, 0, Math.PI * 2);
+                    this.ctx.fill();
+                });
+            }
+
+            drawConnections() {
+                for (let i = 0; i < this.nodes.length; i++) {
+                    for (let j = i + 1; j < this.nodes.length; j++) {
+                        const node1 = this.nodes[i];
+                        const node2 = this.nodes[j];
+                        const distance = Math.sqrt(
+                            Math.pow(node1.x - node2.x, 2) + Math.pow(node1.y - node2.y, 2)
+                        );
+                        if (distance < this.config.connectionDistance) {
+                            const baseOpacity = (this.config.connectionDistance - distance) / 
+                                              this.config.connectionDistance * 
+                                              this.config.connectionOpacity;
+                            const opacity = baseOpacity * this.config.connectionDensity;
+                            const gradient = this.ctx.createLinearGradient(node1.x, node1.y, node2.x, node2.y);
+                            gradient.addColorStop(0, `rgba(255, 255, 255, ${opacity})`);
+                            gradient.addColorStop(0.5, `rgba(93, 176, 255, ${opacity * 0.8})`);
+                            gradient.addColorStop(1, `rgba(255, 255, 255, ${opacity})`);
+                            this.ctx.strokeStyle = gradient;
+                            this.ctx.lineWidth = this.config.lineWidth;
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(node1.x, node1.y);
+                            this.ctx.lineTo(node2.x, node2.y);
+                            this.ctx.stroke();
+                            if (opacity > 0.2) {
+                                const pulsePos = (Math.sin(this.pulseOffset * 2 + distance * 0.01) + 1) / 2;
+                                const pulseX = node1.x + (node2.x - node1.x) * pulsePos;
+                                const pulseY = node1.y + (node2.y - node1.y) * pulsePos;
+                                const pulseGradient = this.ctx.createRadialGradient(pulseX, pulseY, 0, pulseX, pulseY, 3);
+                                pulseGradient.addColorStop(0, 'rgba(93, 176, 255, 0.6)');
+                                pulseGradient.addColorStop(1, 'rgba(93, 176, 255, 0)');
+                                this.ctx.fillStyle = pulseGradient;
+                                this.ctx.beginPath();
+                                this.ctx.arc(pulseX, pulseY, 3, 0, Math.PI * 2);
+                                this.ctx.fill();
+                            }
+                        }
+                    }
+                }
+            }
+
+            animate() {
+                if (!this.isRunning) return;
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.updateNodes();
+                this.drawConnections();
+                this.drawNodes();
+                this.animationId = requestAnimationFrame(() => this.animate());
+            }
+
+            start() {
+                this.isRunning = true;
+                this.animate();
+            }
+
+            stop() {
+                this.isRunning = false;
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                    this.animationId = null;
+                }
+            }
+
+            toggle() {
+                if (this.isRunning) {
+                    this.stop();
+                } else {
+                    this.start();
+                }
+                return this.isRunning;
+            }
+        }
+
+        class HAPI {
+            constructor(config, knowledgeBase) {
+                this.config = config;
+                this.knowledge = knowledgeBase;
+                this.unknownQueryIndex = 0;
+                this.conversationStarted = false;
+                this.button = document.getElementById('chatButton');
+                this.window = document.getElementById('chatWindow');
+                this.closeBtn = document.getElementById('chatClose');
+                this.input = document.getElementById('chatInput');
+                this.sendBtn = document.getElementById('chatSend');
+                this.messages = document.getElementById('chatMessages');
+                this.init();
+            }
+
+            init() {
+                this.button.addEventListener('click', () => this.toggleChat());
+                this.closeBtn.addEventListener('click', () => this.closeChat());
+                this.sendBtn.addEventListener('click', () => this.sendMessage());
+                this.input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.sendMessage();
+                });
+            }
+
+            toggleChat() {
+                this.window.classList.toggle('open');
+                if (this.window.classList.contains('open')) {
+                    this.button.classList.add('active');
+                    if (!this.conversationStarted) {
+                        setTimeout(() => {
+                            this.showGreeting();
+                            this.conversationStarted = true;
+                        }, this.config.greetingDelay);
+                    }
+                    this.input.focus();
+                } else {
+                    this.button.classList.remove('active');
+                }
+            }
+
+            closeChat() {
+                this.window.classList.remove('open');
+                this.button.classList.remove('active');
+            }
+
+            showGreeting() {
+                this.showTypingIndicator();
+                setTimeout(() => {
+                    this.hideTypingIndicator();
+                    this.addMessage(this.config.greetingMessage, 'bot');
+                }, this.config.typingDelay);
+            }
+
+            sendMessage() {
+                const message = this.input.value.trim();
+                if (!message) return;
+                this.addMessage(message, 'user');
+                this.input.value = '';
+                const isComplex = this.config.complexKeywords.some(keyword => 
+                    message.toLowerCase().includes(keyword)
+                );
+                const delay = isComplex ? this.config.thinkingDelay : this.config.typingDelay;
+                this.showTypingIndicator();
+                setTimeout(() => {
+                    this.hideTypingIndicator();
+                    const response = this.generateResponse(message);
+                    this.addMessage(response, 'bot');
+                }, delay);
+            }
+
+            showTypingIndicator() {
+                const indicator = document.createElement('div');
+                indicator.className = 'typing-indicator';
+                indicator.id = 'typingIndicator';
+                indicator.innerHTML = '<span></span><span></span><span></span>';
+                this.messages.appendChild(indicator);
+                this.messages.scrollTop = this.messages.scrollHeight;
+            }
+
+            hideTypingIndicator() {
+                const indicator = document.getElementById('typingIndicator');
+                if (indicator) indicator.remove();
+            }
+
+            addMessage(text, type) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message ${type}`;
+                messageDiv.textContent = text;
+                this.messages.appendChild(messageDiv);
+                this.messages.scrollTop = this.messages.scrollHeight;
+            }
+
+            generateResponse(message) {
+                const lowerMessage = message.toLowerCase();
+                
+                if (lowerMessage.includes('pause') && lowerMessage.includes('animation')) {
+                    window.neuralNetworkInstance.stop();
+                    const toggle = document.getElementById('neuralToggle');
+                    toggle.textContent = '▶';
+                    toggle.classList.add('paused');
+                }
+                if ((lowerMessage.includes('start') || lowerMessage.includes('play') || lowerMessage.includes('resume')) && lowerMessage.includes('animation')) {
+                    window.neuralNetworkInstance.start();
+                    const toggle = document.getElementById('neuralToggle');
+                    toggle.textContent = '⏸';
+                    toggle.classList.remove('paused');
+                }
+                if (lowerMessage.includes('stop') && lowerMessage.includes('animation')) {
+                    window.neuralNetworkInstance.stop();
+                    const toggle = document.getElementById('neuralToggle');
+                    toggle.textContent = '▶';
+                    toggle.classList.add('paused');
+                }
+                if (lowerMessage.includes('toggle') && lowerMessage.includes('animation')) {
+                    const isRunning = window.neuralNetworkInstance.toggle();
+                    const toggle = document.getElementById('neuralToggle');
+                    toggle.textContent = isRunning ? '⏸' : '▶';
+                    toggle.classList.toggle('paused', !isRunning);
+                }
+                
+                for (const [key, value] of Object.entries(this.knowledge)) {
+                    if (lowerMessage.includes(key)) return value;
+                }
+                const fallback = this.config.unknownQueryResponses[this.unknownQueryIndex];
+                this.unknownQueryIndex = (this.unknownQueryIndex + 1) % this.config.unknownQueryResponses.length;
+                return fallback;
+            }
+        }
+
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+        }
+
+        function initNavigationHighlight() {
+            window.addEventListener('scroll', () => {
+                const sections = document.querySelectorAll('section[id]');
+                const navLinks = document.querySelectorAll('.nav-links a');
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 100;
+                    const sectionHeight = section.clientHeight;
+                    if (window.pageYOffset >= sectionTop && window.pageYOffset < sectionTop + sectionHeight) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) link.classList.add('active');
+                });
+            });
+        }
+
+        function initSmoothScroll() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let neuralNetwork;
+            setTimeout(() => {
+                neuralNetwork = new NeuralNetwork(NEURAL_CONFIG);
+                window.neuralNetworkInstance = neuralNetwork;
+            }, 100);
+
+            const neuralToggle = document.getElementById('neuralToggle');
+            neuralToggle.addEventListener('click', () => {
+                if (neuralNetwork) {
+                    const isRunning = neuralNetwork.toggle();
+                    neuralToggle.textContent = isRunning ? '⏸' : '▶';
+                    neuralToggle.classList.toggle('paused', !isRunning);
+                }
+            });
+
+            new HAPI(HAPI_CONFIG, HAPI_KNOWLEDGE);
+            initSmoothScroll();
+            initScrollAnimations();
+            initNavigationHighlight();
+        });
+    </script>
+</body>
+</html>
